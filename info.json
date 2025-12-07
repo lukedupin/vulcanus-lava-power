@@ -1,0 +1,9 @@
+{
+  "name": "vulcanus-lava-power",
+  "version": "1.0.0",
+  "title": "Vulcanus Lava Power",
+  "author": "Orbital917",
+  "description": "Power Gen. on Vulcanus now uses lava / water -> steam",
+  "factorio_version": "2.0",
+  "dependencies": ["base >= 2.0.0"]
+}

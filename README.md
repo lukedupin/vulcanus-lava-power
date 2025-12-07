@@ -1,0 +1,1 @@
+Factorio mod to use change how steam generation works. Steam is now too cold to use for anything other than water condensing. A new type of tugsten heat tower now gives you the heat needed by consuming lava
