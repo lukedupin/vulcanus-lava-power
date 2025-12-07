@@ -4,7 +4,7 @@
 data:extend({
   {
     type = "int-setting",
-    name = "power-production",
+    name = "vlp-power-production",
     setting_type = "startup",
     default_value = 80,
     minimum_value = 5,
@@ -13,11 +13,11 @@ data:extend({
   },
   {
     type = "int-setting", 
-    name = "lava-consumption",
+    name = "vlp-lava-energy",
     setting_type = "startup",
-    default_value = 60,
+    default_value = 180,
     minimum_value = 1,
-    maximum_value = 500,
+    maximum_value = 1000,
     order = "a-b"
   }
 })

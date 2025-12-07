@@ -7,20 +7,29 @@ lava_heating_tower.name = "lava-heating-tower"
 lava_heating_tower.minable.result = "lava-heating-tower"
 
 -- Remove the burner (fuel slot) and add fluid box for lava instead
-lava_heating_tower.burner = nil
+lava_heating_tower.burner = {
+  type = "burner",
+  fuel_categories = {"lava"},
+  effectivity = 2.5,
+  fuel_inventory_size = 0,
+  burnt_inventory_size = 0,
+  burns_fluid = true,
+  smoke = {},
+  light_flicker = {color = {0, 0, 0}},
+  emissions_per_minute = {},
+}
 
 -- Add fluid box for lava input (only connectable on one side - north)
 lava_heating_tower.fluid_box = {
-  volume = 1000,
-  pipe_connections = {
-    {
-      flow_direction = "input",
-      direction = defines.direction.north,
-      position = {0, -1}
-    }
-  },
-  production_type = "input",
-  filter = "lava"
+    volume = 200,
+    pipe_connections = {
+      { flow_direction = "input-output", direction = defines.direction.north, position = {0, -1} },
+      { flow_direction = "input-output", direction = defines.direction.east, position = {1, 0} },
+      { flow_direction = "input-output", direction = defines.direction.south, position = {0, 1} },
+      { flow_direction = "input-output", direction = defines.direction.west, position = {-1, 0} }
+    },
+    production_type = "input-output",
+    filter = "lava"
 }
 
 -- Set up energy source as fluid-burning
@@ -28,29 +37,31 @@ lava_heating_tower.energy_source = {
   type = "fluid",
   effectivity = 2.5, -- 250% efficiency like heating tower
   fluid_box = {
-    volume = 1000,
+    volume = 200,
     pipe_connections = {
-      {
-        flow_direction = "input",
-        direction = defines.direction.north,
-        position = {0, -1}
-      }
+      { flow_direction = "input-output", direction = defines.direction.north, position = {0, -1} },
+      { flow_direction = "input-output", direction = defines.direction.east, position = {1, 0} },
+      { flow_direction = "input-output", direction = defines.direction.south, position = {0, 1} },
+      { flow_direction = "input-output", direction = defines.direction.west, position = {-1, 0} }
     },
-    production_type = "input",
+    production_type = "input-output",
     filter = "lava"
   },
   burns_fluid = true,
   scale_fluid_usage = true,
-  maximum_temperature = 1000
+  maximum_temperature = 1000,
+  specific_heat = settings.startup['vlp-power-production'].value .. "MW",
+  max_transfer = settings.startup['vlp-power-production'].value .. "MW",
+  min_working_temperature = 15
 }
-lava_heating_tower.consumption = settings.startup['power-production'].value .. "MW"
+lava_heating_tower.consumption = settings.startup['vlp-power-production'].value .. "MW"
 lava_heating_tower.fixed_direction = false
 
 -- Maximum heat is still 1000°C like heating tower
 lava_heating_tower.max_temperature = 1000
 
 -- Set consumption rate (adjust as needed for balance)
-lava_heating_tower.fluid_usage_per_tick = settings.startup['lava-consumption'].value -- Consumes 1 lava per tick (60/sec)
+lava_heating_tower.fluid_usage_per_tick = 1 --settings.startup['vlp-lava-consumption'].value -- Consumes 1 lava per tick (60/sec)
 
 -- Add tint to make it visually distinct (purple)
 lava_heating_tower.heating_tower_tint = {r = 0.6, g = 0.2, b = 0.9, a = 1.0}
@@ -98,4 +109,10 @@ if data.raw.recipe["acid-neutralisation"] then
       result.temperature = 50
     end
   end
+end
+
+if data.raw.fluid["lava"] then
+  data.raw.fluid["lava"].fuel_value = settings.startup['vlp-lava-energy'].value .. "kJ"
+  --data.raw.fluid["lava"].fuel_value =  "kJ"  -- Energy per unit of lava
+  data.raw.fluid["lava"].fuel_category = "lava"  -- Or create custom category
 end
