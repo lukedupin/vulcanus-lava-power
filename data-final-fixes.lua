@@ -17,10 +17,7 @@ lava_heating_tower.burner = {
   smoke = {},
   light_flicker = {color = {0, 0, 0}},
   emissions_per_minute = {},
-}
-
--- Add fluid box for lava input (only connectable on one side - north)
-lava_heating_tower.fluid_box = {
+  fluid_box = {
     volume = 200,
     pipe_connections = {
       { flow_direction = "input-output", direction = defines.direction.north, position = {0, -1} },
@@ -30,6 +27,7 @@ lava_heating_tower.fluid_box = {
     },
     production_type = "input-output",
     filter = "lava"
+  }
 }
 
 -- Set up energy source as fluid-burning
@@ -99,14 +97,14 @@ table.insert(data.raw.technology["tungsten-carbide"].effects, {
   recipe = "lava-heating-tower"
 })
 
--- Modify acid neutralization to produce cold steam (50°C)
+-- Modify acid neutralization to produce cold steam (120°C)
 if data.raw.recipe["acid-neutralisation"] then
   local acid_recipe = data.raw.recipe["acid-neutralisation"]
   
   -- Update the results to specify cold steam temperature
   for _, result in pairs(acid_recipe.results) do
     if result.name == "steam" or result[1] == "steam" then
-      result.temperature = 50
+      result.temperature = 40
     end
   end
 end
