@@ -100,7 +100,7 @@ table.insert(data.raw.technology["tungsten-carbide"].effects, {
 -- Modify acid neutralization to produce cold steam (120°C)
 if data.raw.recipe["acid-neutralisation"] then
   local acid_recipe = data.raw.recipe["acid-neutralisation"]
-  
+
   -- Update the results to specify cold steam temperature
   for _, result in pairs(acid_recipe.results) do
     if result.name == "steam" or result[1] == "steam" then
@@ -111,6 +111,6 @@ end
 
 if data.raw.fluid["lava"] then
   data.raw.fluid["lava"].fuel_value = settings.startup['vlp-lava-energy'].value .. "kJ"
-  --data.raw.fluid["lava"].fuel_value =  "kJ"  -- Energy per unit of lava
-  data.raw.fluid["lava"].fuel_category = "lava"  -- Or create custom category
+  --data.raw.fluid["lava"].fuel_value = "kJ" -- Energy per unit of lava
+  data.raw.fluid["lava"].fuel_category = "lava" -- Or create custom category
 end
