@@ -1,70 +1,63 @@
--- data.lua for Lava Heating Tower mod
-
--- Create the lava heating tower entity by copying the heating tower
 local lava_heating_tower = table.deepcopy(data.raw["reactor"]["heating-tower"])
 
 lava_heating_tower.name = "lava-heating-tower"
-lava_heating_tower.minable.result = "lava-heating-tower"
+lava_heating_tower.minable = {mining_time = 0.5, result = "lava-heating-tower"}
 
--- Remove the burner (fuel slot) and add fluid box for lava instead
-lava_heating_tower.burner = {
-  type = "burner",
-  fuel_categories = {"lava"},
-  effectivity = 2.5,
-  fuel_inventory_size = 0,
-  burnt_inventory_size = 0,
-  burns_fluid = true,
-  smoke = {},
-  light_flicker = {color = {0, 0, 0}},
-  emissions_per_minute = {},
-  fluid_box = {
-    volume = 200,
-    pipe_connections = {
-      { flow_direction = "input-output", direction = defines.direction.north, position = {0, -1} },
-      { flow_direction = "input-output", direction = defines.direction.east, position = {1, 0} },
-      { flow_direction = "input-output", direction = defines.direction.south, position = {0, 1} },
-      { flow_direction = "input-output", direction = defines.direction.west, position = {-1, 0} }
-    },
+local fluid_bizox = {
+    volume = 1000,
     production_type = "input-output",
-    filter = "lava"
-  }
+    filter = "lava",
+    pipe_connections = {
+        -- North ×2
+        { flow_direction = "input-output", direction = defines.direction.north, position = {-1, -1} },
+        { flow_direction = "input-output", direction = defines.direction.north, position = { 1, -1} },
+        -- East ×2
+        { flow_direction = "input-output", direction = defines.direction.east, position = { 1, -1} },
+        { flow_direction = "input-output", direction = defines.direction.east, position = { 1, 1} },
+        -- South ×2
+        { flow_direction = "input-output", direction = defines.direction.south, position = {-1, 1} },
+        { flow_direction = "input-output", direction = defines.direction.south, position = { 1, 1} },
+        -- West ×2
+        { flow_direction = "input-output", direction = defines.direction.west, position = {-1, -1} },
+        { flow_direction = "input-output", direction = defines.direction.west, position = {-1, 1} },
+    },
 }
 
--- Set up energy source as fluid-burning
 lava_heating_tower.energy_source = {
-  type = "fluid",
-  effectivity = 2.5, -- 250% efficiency like heating tower
-  fluid_box = {
-    volume = 200,
-    pipe_connections = {
-      { flow_direction = "input-output", direction = defines.direction.north, position = {0, -1} },
-      { flow_direction = "input-output", direction = defines.direction.east, position = {1, 0} },
-      { flow_direction = "input-output", direction = defines.direction.south, position = {0, 1} },
-      { flow_direction = "input-output", direction = defines.direction.west, position = {-1, 0} }
-    },
-    production_type = "input-output",
-    filter = "lava"
-  },
-  burns_fluid = true,
-  scale_fluid_usage = true,
-  maximum_temperature = 1000,
-  specific_heat = settings.startup['vlp-power-production'].value .. "MW",
-  max_transfer = settings.startup['vlp-power-production'].value .. "MW",
-  min_working_temperature = 15
+    type = "fluid",
+    burns_fluid = true,
+    scale_fluid_usage = true,
+    effectivity = 2.5,
+    fluid_box = fluid_bizox,
+    maximum_temperature = 1000,
+    specific_heat = settings.startup["vlp-power-production"].value .. "MJ",
+    max_transfer = settings.startup["vlp-power-production"].value .. "MW",
 }
-lava_heating_tower.consumption = settings.startup['vlp-power-production'].value .. "MW"
-lava_heating_tower.fixed_direction = false
 
--- Maximum heat is still 1000°C like heating tower
+lava_heating_tower.heat_buffer = data.raw["reactor"]["heating-tower"].heat_buffer
+
+lava_heating_tower.consumption = settings.startup["vlp-power-production"].value .. "MW"
+
+lava_heating_tower.fluid_usage_per_tick = settings.startup["vlp-lava-consumption"] and
+settings.startup["vlp-lava-consumption"].value or 1
+
 lava_heating_tower.max_temperature = 1000
 
--- Set consumption rate (adjust as needed for balance)
-lava_heating_tower.fluid_usage_per_tick = 1 --settings.startup['vlp-lava-consumption'].value -- Consumes 1 lava per tick (60/sec)
-
--- Add tint to make it visually distinct (purple)
 lava_heating_tower.heating_tower_tint = {r = 0.6, g = 0.2, b = 0.9, a = 1.0}
 
--- Register the entity
+lava_heating_tower.fixed_direction = false
+
+lava_heating_tower.result_inventory_size = 1
+
+local lava_pipe_pictures = assembler3pipepictures()
+
+lava_heating_tower.energy_source.fluid_box.pipe_covers = pipecoverspictures()
+lava_heating_tower.energy_source.fluid_box.pipe_picture = lava_pipe_pictures
+for _, conn in pairs(lava_heating_tower.energy_source.fluid_box.pipe_connections) do
+    conn.secondary_draw_order = -10
+end
+lava_heating_tower.energy_source.fluid_box.secondary_draw_order = -10
+
 data:extend({lava_heating_tower})
 
 -- Create the item
@@ -104,7 +97,7 @@ if data.raw.recipe["acid-neutralisation"] then
   -- Update the results to specify cold steam temperature
   for _, result in pairs(acid_recipe.results) do
     if result.name == "steam" or result[1] == "steam" then
-      result.temperature = 40
+      result.temperature = 125
     end
   end
 end
