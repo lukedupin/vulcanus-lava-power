@@ -6,9 +6,9 @@ data:extend({
     type = "int-setting",
     name = "vlp-power-production",
     setting_type = "startup",
-    default_value = 80,
-    minimum_value = 5,
-    maximum_value = 200,
+    default_value = 40,
+    minimum_value = 1,
+    maximum_value = 250,
     order = "a-a"
   },
   {
