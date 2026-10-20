@@ -65,6 +65,9 @@ data:extend({
   {
     type = "container",
     name = "lava-heating-tower-storage",
+    icon = lava_heating_tower.icon,
+    icon_size = lava_heating_tower.icon_size,
+    icons = lava_heating_tower.icons,
     flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
     hidden = true,
     inventory_size = 1,
