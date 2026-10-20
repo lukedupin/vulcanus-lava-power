@@ -19,5 +19,14 @@ data:extend({
     minimum_value = 1,
     maximum_value = 1000,
     order = "a-b"
+  },
+  {
+    type = "int-setting",
+    name = "vlp-stone-rate",
+    setting_type = "startup",
+    default_value = 5,
+    minimum_value = 1,
+    maximum_value = 25,
+    order = "a-c"
   }
 })

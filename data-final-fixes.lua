@@ -60,6 +60,23 @@ lava_heating_tower.energy_source.fluid_box.secondary_draw_order = -10
 
 data:extend({lava_heating_tower})
 
+-- Hidden single-slot storage that fills with stone while the tower runs (see control.lua)
+data:extend({
+  {
+    type = "container",
+    name = "lava-heating-tower-storage",
+    flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
+    hidden = true,
+    inventory_size = 1,
+    collision_box = lava_heating_tower.collision_box,
+    selection_box = lava_heating_tower.selection_box,
+    collision_mask = {layers = {}},
+    selectable_in_game = false,
+    max_health = 1,
+    picture = util.empty_sprite(),
+  }
+})
+
 -- Create the item
 local lava_heating_tower_item = table.deepcopy(data.raw["item"]["heating-tower"])
 lava_heating_tower_item.name = "lava-heating-tower"
