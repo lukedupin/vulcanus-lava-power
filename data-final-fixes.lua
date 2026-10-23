@@ -49,10 +49,16 @@ lava_heating_tower.fixed_direction = false
 
 lava_heating_tower.result_inventory_size = 1
 
-local lava_pipe_pictures = assembler3pipepictures()
+-- The assembler3pipepictures()/pipecoverspictures() globals are gone by this stage,
+-- so reuse the pictures already built into the vanilla prototypes
+local vanilla_tower_box = data.raw["reactor"]["heating-tower"].energy_source.fluid_box
+local assembler3_boxes = data.raw["assembling-machine"]["assembling-machine-3"].fluid_boxes
+local lava_pipe_pictures = assembler3_boxes and assembler3_boxes[1] and assembler3_boxes[1].pipe_picture
+local lava_pipe_covers = (assembler3_boxes and assembler3_boxes[1] and assembler3_boxes[1].pipe_covers)
+  or vanilla_tower_box.pipe_covers
 
-lava_heating_tower.energy_source.fluid_box.pipe_covers = pipecoverspictures()
-lava_heating_tower.energy_source.fluid_box.pipe_picture = lava_pipe_pictures
+lava_heating_tower.energy_source.fluid_box.pipe_covers = table.deepcopy(lava_pipe_covers)
+lava_heating_tower.energy_source.fluid_box.pipe_picture = table.deepcopy(lava_pipe_pictures or vanilla_tower_box.pipe_picture)
 for _, conn in pairs(lava_heating_tower.energy_source.fluid_box.pipe_connections) do
     conn.secondary_draw_order = -10
 end
