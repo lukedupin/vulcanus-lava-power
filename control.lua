@@ -74,7 +74,7 @@ script.on_nth_tick(TICK_INTERVAL, function()
             end
 
             -- Stop heating while the slot is full
-            tower.active = inventory.can_insert(stone)
+            tower.disabled_by_script = not inventory.can_insert(stone)
         end
     end
 end)
